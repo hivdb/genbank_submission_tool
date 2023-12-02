@@ -1,0 +1,49 @@
+query align($sequences: [UnalignedSequenceInput]!) {
+    viewer {
+        currentVersion {
+            text,
+            publishDate
+            },
+        sequenceAnalysis(sequences: $sequences) {
+            inputSequence {
+                header
+                SHA512
+            }
+            bestMatchingSubtype {
+                displayWithoutDistance
+            }
+            strain {
+                name
+                display
+            }
+            validationResults {
+                level
+                message
+            }
+            alignedGeneSequences(includeGenes: [CA, PR, RT, IN]) {
+                gene {
+                    name
+                    length
+                },
+                firstNA,
+                lastNA,
+                mutations {
+                    position
+                    AAs
+                    isInsertion
+                    isDeletion
+                    insertedNAs
+                    isUnusual
+                    isSDRM
+                    primaryType
+                    hasStop
+                    shortText
+                    isApobecMutation
+                    isAmbiguous
+                },
+                adjustedAlignedNAs
+                adjustedAlignedAAs
+            }
+        }
+    }
+}
