@@ -13,7 +13,7 @@ ipython:
 	@./env/bin/ipython
 
 align_seq:
-	@./env/bin/python3 align_seq.py ./input_files/unaligned_sequences.fasta ./input_files/aligned_seq.json
+	@./env/bin/python3 align_seq.py ./input_files/unaligned_sequences.fasta ./input_files/aligned_seq.json ./input_files/aligned_meta.csv
 
 generate: align_seq
 	@./env/bin/python3 generate.py ./input_files/aligned_sequences.json ./input_files/source_modifier.csv
