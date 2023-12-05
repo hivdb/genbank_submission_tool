@@ -1,6 +1,10 @@
 init:
+	@python3 version.py
 	@python -m venv env
 	@./env/bin/pip3 install -r requirements.txt
+	@mkdir -p input_files
+	@mkdir -p bankit_files
+
 
 freeze:
 	@./env/bin/pip3 freeze > requirements.txt
