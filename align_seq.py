@@ -79,7 +79,7 @@ def dump_seq_meta_info(report_file, aligned_file):
                 ]
 
             report.append({
-                'ID': seq['inputSequence']['header'],
+                'Isolate': seq['inputSequence']['header'],
                 'virus': seq['strain']['name'],
                 'subtype': seq['bestMatchingSubtype'].get(
                     'displayWithoutDistance', ''),
