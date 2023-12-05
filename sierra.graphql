@@ -41,8 +41,14 @@ query align($sequences: [UnalignedSequenceInput]!) {
                     isApobecMutation
                     isAmbiguous
                 },
-                adjustedAlignedNAs
-                adjustedAlignedAAs
+                # adjustedAlignedNAs, does not contain insertion
+                # adjustedAlignedAAs,
+                prettyPairwise {
+                    positionLine,
+                    refAALine,
+                    alignedNAsLine,
+                    mutationLine
+                },
             }
         }
     }

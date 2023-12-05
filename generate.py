@@ -37,8 +37,8 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
             for i in items
         ])
 
-        seq = seq.lstrip('.').rstrip('.').lstrip('-').rstrip('-')
-        seq = seq.replace('.', 'N')
+        # seq = seq.lstrip('.').rstrip('.').lstrip('-').rstrip('-')
+        # seq = seq.replace('.', 'N')
 
         # assert not ('.' in seq), isolate
         # assert not ('-' in seq), isolate
