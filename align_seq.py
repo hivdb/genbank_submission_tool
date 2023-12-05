@@ -89,6 +89,8 @@ def dump_seq_meta_info(report_file, aligned_file):
                 'lastNA': gene['lastNA'],
                 'mutations': ', '.join(mutations),
                 'num_mutations': len(mutations),
+                'insertions': ', '.join(insertions),
+                'deletions': ', '.join(deletions),
                 'aligned_NA': gene['adjustedAlignedNAs']
             })
 
@@ -112,3 +114,5 @@ if __name__ == '__main__':
     aligned = align_seq(seq_list)
 
     dump_json(aligned_file, aligned)
+
+    dump_seq_meta_info(seq_meta_file, aligned_file)
