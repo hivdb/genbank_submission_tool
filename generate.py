@@ -6,6 +6,12 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from operator import itemgetter
 from itertools import groupby
+from datetime import datetime
+
+
+def format_date(collect_date):
+    date = datetime.strptime(collect_date, '%Y-%m-%d')
+    return datetime.strftime(date, '%d-%b-%Y')
 
 
 def generate_bankit(seq_info, modifier, organism, host, bankit_file):
@@ -40,7 +46,7 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
         mod = modifier[isolate]
 
         description = {
-            'Collection_date': mod['Collection_date'],
+            'Collection_date': format_date(mod['Collection_date']),
             'Country': mod['Country'],
             'Organism': organism,
             'Host': host,
