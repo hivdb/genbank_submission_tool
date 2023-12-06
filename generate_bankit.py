@@ -64,7 +64,7 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
             'Organism': organism,
             'Host': host,
             'Isolate': isolate,
-            'Isolate source': mod['Isolation source']
+            'Isolation source': mod['Isolation source']
         }
 
         if mod['note']:
