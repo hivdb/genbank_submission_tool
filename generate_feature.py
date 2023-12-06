@@ -112,7 +112,7 @@ def feature_nonfunction(feature_table, items):
     has_stop = [
         i
         for i in items
-        if i['hasStop']
+        if i['stops']
     ]
 
     non_trans = [

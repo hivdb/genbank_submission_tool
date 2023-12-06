@@ -49,8 +49,9 @@ The program will do several things:
 
 - check the uniqueness of `Isolate`
 - align the sequence and get alignment information
-- generate `bankit.fasta` in `bankit_files` folder
-- generate `features.txt` in `bankit_files` folder
+- generate two `BankIt files` in `bankit_files` folder
+    - `bankit.fasta`
+    - `features.txt`
 
 ### Check BankIt files for submission
 
@@ -96,3 +97,37 @@ Please see below are some issues you would encounter and how to resolve them:
     - if the sequences were isolated from plasma, choose **genomic RNA**
 - Tab `Sequencing Technology`
     - if the sequences were not using NGS methods, please don't choose any of th options `unassembled sequence reads`, `assembed sequences (consisting of two or more sequence reads)`.
+
+
+## Advance usage
+
+You can use your prefered alignment tool to prepare the aligned sequence and save in file `input_files/aligned_meta.csv`
+
+Several columns are required
+
+- `Isolate`
+- `gene`
+    - gene name
+- `insertions`
+    - insertion mutation list, for example (S255N_K)
+- `deletions`
+    - deletion position list
+- `stops`
+    - stop mutation list for example (E170*)
+- `gene_AA_length`
+    - gene amino acid sequence length
+- `gene_NA_length`
+    - gene nucleotide sequence length
+- `aligne_NA_length`
+    - nucleotide sequence length after alignment
+- `start_AA_pos`
+- `start_NA_pos`
+- `stop_AA_pos`
+- `stop_NA_pos`
+- `translatable`
+- `untrans_reason`
+    - if the sequence is not translatable, please provide the reason
+- `aligned_NA`
+    - the aligned_NA should be the same length as `gene_NA_length`, and heading or tailing unsequenced positions should use `.` to indicate tehem.
+
+Then you can use the command line to generate `BankIt files`, please refer to [Makefile](./Makefile) for how to use the scripts.

@@ -134,7 +134,7 @@ def dump_seq_meta_info(report_file, aligned_file):
                     f'[{start}-{stop}] ({length})'
                     for start, stop, length in gaps
                 ]),
-                'hasStop': ', '.join(stops),
+                'stops': ', '.join(stops),
             }
 
             record.update(get_NA_seq(gene))
