@@ -1,5 +1,7 @@
 # HIVDB GenBank submission helper tools
 
+This program can help you prepare sequences, meta data, and sequence annotations. It's designed for sanger sequencing results or consensus sequence of NGS sequencing.
+
 ## How to use the program
 
 1. [Prepare the sequence and meta data files](#prepare-the-sequence-and-meta-data-files)
@@ -99,7 +101,7 @@ Please see below are some issues you would encounter and how to resolve them:
     - if the sequences were not using NGS methods, please don't choose any of th options `unassembled sequence reads`, `assembed sequences (consisting of two or more sequence reads)`.
 
 
-## Advance usage
+## Advanced usage
 
 You can use your prefered alignment tool to prepare the aligned sequence and save in file `input_files/aligned_meta.csv`
 
