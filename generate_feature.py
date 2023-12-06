@@ -38,7 +38,7 @@ def get_NA_length(items):
             for i in items
         ])
 
-    seq = seq.rstrip('.')
+    seq = seq.lstrip('.').rstrip('.')
 
     NA_length = len(seq)
 
