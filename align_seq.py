@@ -11,7 +11,7 @@ from tqdm import tqdm
 from file_format import dump_csv
 from file_format import dump_json
 from file_format import load_json
-import re
+from itertools import groupby
 
 
 WS = Path(__file__).resolve().parent
@@ -60,6 +60,22 @@ def query_sierra(sequences):
     return resp.json()
 
 
+def get_gaps(deletions):
+
+    gaps = []
+    for _, pos_list in groupby(
+            enumerate(deletions),
+            lambda pair: pair[-1] - pair[0]):
+        pos_list = [
+            pos
+            for idx, pos in pos_list
+        ]
+        start = pos_list[0]
+        stop = pos_list[-1]
+        gaps.append((start, stop, stop - start + 1))
+    return gaps
+
+
 def dump_seq_meta_info(report_file, aligned_file):
 
     aligned_seq = load_json(aligned_file)
@@ -76,7 +92,7 @@ def dump_seq_meta_info(report_file, aligned_file):
                 if i['isInsertion']
                 ]
             deletions = [
-                i['shortText']
+                i['position']
                 for i in gene['mutations']
                 if i['isDeletion']
                 ]
@@ -86,8 +102,14 @@ def dump_seq_meta_info(report_file, aligned_file):
                 if i['hasStop']
                 ]
 
+            gaps = get_gaps(deletions)
+
+            # adjustedAlignedNAs dont have insertion
             # seq_NA = gene['adjustedAlignedNAs']
             # length = len(seq_NA)
+
+            gene_AA_length = gene['gene']['length']
+            gene_NA_length = gene_AA_length * 3
 
             AA_positions = gene['prettyPairwise']['positionLine']
             AA_positions = [
@@ -96,15 +118,24 @@ def dump_seq_meta_info(report_file, aligned_file):
                 if i.strip()
             ]
 
-            start_NA_pos = min(AA_positions) * 3 - 2
-            stop_NA_pos = max(AA_positions) * 3
+            trimmed_seq_NA = gene['prettyPairwise']['alignedNAsLine']
+            if '-' in trimmed_seq_NA[0]:
+                trimmed_seq_NA = trimmed_seq_NA[1:]
+                AA_positions.pop(0)
+            if '-' in trimmed_seq_NA[-1]:
+                trimmed_seq_NA = trimmed_seq_NA[:-1]
+                AA_positions.pop(-1)
+
+            trimmed_seq_NA = ''.join(trimmed_seq_NA)
+
+            start_AA_pos = min(AA_positions)
+            start_NA_pos = start_AA_pos * 3 - 2
+
+            stop_AA_pos = max(AA_positions)
+            stop_NA_pos = stop_AA_pos * 3
+
             aligned_NA_length = stop_NA_pos - start_NA_pos + 1
 
-            trimmed_seq_NA = ''.join(
-                gene['prettyPairwise']['alignedNAsLine'])
-
-            gene_AA_length = gene['gene']['length']
-            gene_NA_length = gene_AA_length * 3
             prepend = '.' * (start_NA_pos - 1)
             append = '.' * (gene_NA_length - stop_NA_pos)
             aligned_NA = prepend + trimmed_seq_NA + append
@@ -127,8 +158,8 @@ def dump_seq_meta_info(report_file, aligned_file):
                 'subtype': seq['bestMatchingSubtype'].get(
                     'displayWithoutDistance', ''),
                 'gene': gene['gene']['name'],
-                'gene AA length': gene_AA_length,
-                'gene NA length': gene_NA_length,
+                'gene_AA_length': gene_AA_length,
+                'gene_NA_length': gene_NA_length,
                 'NA_length': aligned_NA_length,
                 'start_NA_pos': start_NA_pos,
                 'stop_NA_pos': stop_NA_pos,
@@ -137,7 +168,11 @@ def dump_seq_meta_info(report_file, aligned_file):
                 'mutations': ', '.join(mutations),
                 'num_mutations': len(mutations),
                 'insertions': ', '.join(insertions),
-                'deletions': ', '.join(deletions),
+                'deletions': ', '.join([str(i) for i in deletions]),
+                'gaps': '\n'.join([
+                    f'[{start}-{stop}] ({length})'
+                    for start, stop, length in gaps
+                ]),
                 'hasStop': ', '.join(stops),
                 'N in seq': 'yes' if '.' in trimmed_seq_NA else '',
                 'del in seq': 'yes' if '-' in trimmed_seq_NA else '',
@@ -148,6 +183,14 @@ def dump_seq_meta_info(report_file, aligned_file):
             })
 
     dump_csv(report_file, report)
+
+    num_untranslate = [
+        i
+        for i in report
+        if i['translatable'] != 1
+    ]
+
+    print(f'# untranslatable: {len(num_untranslate)}')
 
 
 if __name__ == '__main__':
