@@ -17,6 +17,8 @@ def dump_json(json_path, obj):
 
 def dump_csv(file_path, table, headers=[], remain=True):
 
+    file_path = Path(file_path)
+
     table_headers = []
     for rec in table:
         for key in rec.keys():

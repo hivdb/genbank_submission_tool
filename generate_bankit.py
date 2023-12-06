@@ -67,6 +67,9 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
             'Isolate source': mod['Isolation source']
         }
 
+        if mod['note']:
+            description['note'] = mod['note']
+
         description = ' '.join([
             f"[{k}={v}]"
             for k, v in description.items()

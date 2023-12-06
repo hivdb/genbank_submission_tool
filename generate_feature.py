@@ -87,7 +87,7 @@ def feature_gaps(feature_table, items):
         stop = int(i['start_NA_pos']) + prev_length - 1
 
         if stop >= start and start != 1:
-            print(items[0]['Isolate'], start, stop)
+            # print(items[0]['Isolate'], start, stop)
             gap_length = stop - start + 1
             gap_list.append((start, stop, gap_length))
 
