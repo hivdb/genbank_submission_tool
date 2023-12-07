@@ -1,0 +1,2 @@
+- check if sequences were from same patient by mutation list
+- check DRM mutations and compare with treatment history
