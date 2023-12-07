@@ -4,6 +4,7 @@ from Bio.Seq import Seq
 from Bio.Data.CodonTable import TranslationError
 import sys
 from file_format import dump_csv
+from file_format import load_csv
 from file_format import load_json
 from itertools import groupby
 
@@ -92,7 +93,7 @@ def get_NA_seq(gene):
     }
 
 
-def dump_seq_meta_info(report_file, aligned_file):
+def dump_seq_meta_info(report_file, aligned_file, ignore_info=None):
 
     aligned_seq = load_json(aligned_file)
 
@@ -141,6 +142,18 @@ def dump_seq_meta_info(report_file, aligned_file):
 
             report.append(record)
 
+    ignore_seq = load_csv(ignore_info) if ignore_info else []
+    ignore_seq = [
+        (i['Isolate'], i['gene'])
+        for i in ignore_seq
+    ]
+
+    report = [
+        i
+        for i in report
+        if (i['Isolate'], i['gene']) not in ignore_seq
+    ]
+
     dump_csv(report_file, report)
 
     num_untranslate = [
@@ -156,4 +169,11 @@ if __name__ == '__main__':
     aligned_file = Path(sys.argv[1]).resolve()
     seq_meta_file = Path(sys.argv[2]).resolve()
 
-    dump_seq_meta_info(seq_meta_file, aligned_file)
+    if len(sys.argv) > 3:
+        ignore_info = Path(sys.argv[3]).resolve()
+        if not ignore_info.exists():
+            ignore_info = None
+    else:
+        ignore_info = None
+
+    dump_seq_meta_info(seq_meta_file, aligned_file, ignore_info)

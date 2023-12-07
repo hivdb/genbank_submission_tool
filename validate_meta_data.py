@@ -15,6 +15,8 @@ def validate(source_file):
 
     for key, items in groupby(isolate):
         items = list(items)
+        if not key:
+            print(f'Empty isolate: {key}')
         if len(items) > 1:
             print(f"{key} is duplidated isolate")
 

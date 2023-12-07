@@ -2,3 +2,4 @@
 - check DRM mutations and compare with treatment history
 - check sequence collection date, normally should not be before around 1970
     - some software will introduce the error when converting date format
+- check stop codon in insertions

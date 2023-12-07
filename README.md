@@ -55,6 +55,10 @@ The program will do several things:
     - `bankit.fasta`
     - `features.txt`
 
+#### Exclude sequence
+
+You can create a file `input_files/aligned_ignore.csv` to exclude some sequences with issues. The header of this file should contain **Isolate** and **gene** columns
+
 ### Check BankIt files for submission
 
 Before submitting your sequences and meta data to GenBank, you should double check the generated two files.
