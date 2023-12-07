@@ -59,6 +59,13 @@ The program will do several things:
 
 You can create a file `input_files/aligned_ignore.csv` to exclude some sequences with issues. The header of this file should contain **Isolate** and **gene** columns
 
+Suggested sequences to be excluded:
+
+- appearent sequencing error
+- gap within a gene is too long
+- too many stop codons
+- too many untranslatable codons
+
 ### Check BankIt files for submission
 
 Before submitting your sequences and meta data to GenBank, you should double check the generated two files.
