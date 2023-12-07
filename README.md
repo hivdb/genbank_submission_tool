@@ -59,6 +59,7 @@ The program will do several things:
 
 Before submitting your sequences and meta data to GenBank, you should double check the generated two files.
 
+- check sequence quality file `input_files/aligned_meta.csv`
 - check `bankit.fasta`
     - check the positions of stop codons are correct.
     - check the positions of deletions and gaps are correct.
