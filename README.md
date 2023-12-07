@@ -83,7 +83,7 @@ Before submitting your sequences and meta data to GenBank, you should double che
     - check the gene name
 
 
-## Create BankIt submission
+## Create BankIt submission (Updated at: 2023-12-06)
 
 
 ### Prepare other information before submission
