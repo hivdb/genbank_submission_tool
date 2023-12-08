@@ -103,6 +103,19 @@ def dump_seq_meta_info(report_file, aligned_file, ignore_info=None):
             mutations = [
                 i['shortText']
                 for i in gene['mutations']]
+
+            ambi_mutations = [
+                i
+                for i in gene['mutations']
+                if i['isAmbiguous']
+            ]
+
+            unusual_mutations = [
+                i
+                for i in gene['mutations']
+                if i['isUnusual']
+            ]
+
             insertions = [
                 i['shortText']
                 for i in gene['mutations']
@@ -129,6 +142,8 @@ def dump_seq_meta_info(report_file, aligned_file, ignore_info=None):
                 'gene': gene['gene']['name'],
                 'mutations': ', '.join(mutations),
                 'num_mutations': len(mutations),
+                'num_ambiguous': len(ambi_mutations),
+                'num_unusual': len(unusual_mutations),
                 'insertions': ', '.join(insertions),
                 'deletions': ', '.join([str(i) for i in deletions]),
                 'gaps': '\n'.join([
