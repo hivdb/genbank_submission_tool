@@ -136,6 +136,9 @@ def feature_nonfunction(feature_table, items):
             '', '', '', 'note',
             f'nonfunctional pol protein due to mutation; contains {" and ".join(genes)}'
         ]))
+        return True
+    else:
+        return False
 
 
 def feature_cds(feature_table, items):
@@ -188,9 +191,10 @@ def generate_feature_table(seq_info, feature_file):
 
         feature_gaps(feature_table, items)
 
-        feature_nonfunction(feature_table, items)
+        nonfunction = feature_nonfunction(feature_table, items)
 
-        feature_cds(feature_table, items)
+        if not nonfunction:
+            feature_cds(feature_table, items)
 
         feature_table.append('')
 
