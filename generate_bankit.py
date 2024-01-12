@@ -6,6 +6,7 @@ from Bio.SeqRecord import SeqRecord
 from operator import itemgetter
 from itertools import groupby
 from datetime import datetime
+from pathlib import Path
 
 
 GENE_ORDER = ['CA', 'PR', 'RT', 'IN']
@@ -30,13 +31,36 @@ def reformat_sequence(seq, isolate):
     return seq
 
 
-def generate_bankit(seq_info, modifier, organism, host, bankit_file):
+def generate_bankit(
+        seq_info, modifier, organism, host, bankit_file, batch_size):
     seq_info = load_csv(seq_info)
     seq_info.sort(key=itemgetter('Isolate'))
     seq_info = {
         isolate: list(items)
         for isolate, items in groupby(seq_info, key=itemgetter('Isolate'))
     }
+
+    if not batch_size:
+        generate_bankit_per_batch(
+            seq_info, modifier, organism, host, bankit_file)
+    else:
+        seq_info = [
+            (k, v)
+            for k, v in seq_info.items()
+        ]
+        batches = [
+            dict(seq_info[i:i + batch_size])
+            for i in range(0, len(seq_info), batch_size)
+        ]
+        for idx, seq_info in enumerate(batches):
+            bankit_file_name = (
+                bankit_file.parent / f"{idx+1}_{bankit_file.name}")
+            generate_bankit_per_batch(
+                seq_info, modifier, organism, host, bankit_file_name)
+
+
+def generate_bankit_per_batch(
+        seq_info, modifier, organism, host, bankit_file):
 
     modifier = load_csv(modifier)
     modifier = {
@@ -63,12 +87,14 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
 
         if ca_items:
             fasta_seq.append(
-                get_seq_record(ca_items, isolate, modifier, 'CAPSID')
+                get_seq_record(
+                    ca_items, isolate, modifier, organism, host, 'CAPSID')
             )
 
         if pol_items:
             fasta_seq.append(
-                get_seq_record(pol_items, isolate, modifier, 'POL')
+                get_seq_record(
+                    pol_items, isolate, modifier, organism, host, 'POL')
             )
 
     SeqIO.write(
@@ -77,7 +103,7 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
         'fasta')
 
 
-def get_seq_record(items, isolate, modifier, gene_name):
+def get_seq_record(items, isolate, modifier, organism, host, gene_name):
 
     seq = ''.join([
         i['aligned_NA']
@@ -118,5 +144,11 @@ if __name__ == '__main__':
     source_modifier = sys.argv[2]
     organism = sys.argv[3]
     host = sys.argv[4]
-    bankit_file = sys.argv[5]
-    generate_bankit(seq_info, source_modifier, organism, host, bankit_file)
+    bankit_file = Path(sys.argv[5]).resolve()
+
+    if len(sys.argv) == 7:
+        batch_size = int(sys.argv[6])
+    else:
+        batch_size = None
+    generate_bankit(
+        seq_info, source_modifier, organism, host, bankit_file, batch_size)

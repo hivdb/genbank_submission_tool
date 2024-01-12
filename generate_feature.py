@@ -7,6 +7,7 @@ from operator import itemgetter
 from itertools import groupby
 from datetime import datetime
 import re
+from pathlib import Path
 
 
 GENE_MAP = {
@@ -192,13 +193,32 @@ def feature_cds(feature_table, items, gene_name):
     ]))
 
 
-def generate_feature_table(seq_info, feature_file):
+def generate_feature_table(seq_info, feature_file, batch_size):
+
     seq_info = load_csv(seq_info)
     seq_info.sort(key=itemgetter('Isolate'))
     seq_info = {
         isolate: list(items)
         for isolate, items in groupby(seq_info, key=itemgetter('Isolate'))
     }
+    if not batch_size:
+        generate_feature_table_per_batch(seq_info, feature_file)
+    else:
+        seq_info = [
+            (k, v)
+            for k, v in seq_info.items()
+        ]
+        batches = [
+            dict(seq_info[i:i + batch_size])
+            for i in range(0, len(seq_info), batch_size)
+        ]
+        for idx, seq_info in enumerate(batches):
+            feature_file_name = (
+                feature_file.parent / f"{idx+1}_{feature_file.name}")
+            generate_feature_table_per_batch(seq_info, feature_file_name)
+
+
+def generate_feature_table_per_batch(seq_info, feature_file):
 
     feature_table = []
     for isolate, items in seq_info.items():
@@ -244,5 +264,10 @@ def update_feature_table(feature_table, isolate, items, gene_name):
 
 if __name__ == '__main__':
     seq_info = sys.argv[1]
-    feature_file = sys.argv[2]
-    generate_feature_table(seq_info, feature_file)
+    feature_file = Path(sys.argv[2])
+
+    if len(sys.argv) == 4:
+        batch_size = int(sys.argv[3])
+    else:
+        batch_size = None
+    generate_feature_table(seq_info, feature_file, batch_size)
