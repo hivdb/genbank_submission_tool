@@ -153,4 +153,5 @@ Then you can use the command line to generate `BankIt files`, please refer to [M
     - you may uploaded too many sequences, please try to split them to batches
 - PUBMED ID not found
     - you need manually fill in the reference information, although it has PUBMED ID
-
+- the sequences contains more than 50% N's
+    - please remove these sequences
