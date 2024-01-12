@@ -145,3 +145,12 @@ Several columns are required
     - the aligned_NA should be the same length as `gene_NA_length`, and heading or tailing unsequenced positions should use `.` to indicate tehem.
 
 Then you can use the command line to generate `BankIt files`, please refer to [Makefile](./Makefile) for how to use the scripts.
+
+
+## The issues you could meet and how to solve them
+
+- 500 error
+    - you may uploaded too many sequences, please try to split them to batches
+- PUBMED ID not found
+    - you need manually fill in the reference information, although it has PUBMED ID
+
