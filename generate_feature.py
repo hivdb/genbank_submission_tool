@@ -10,7 +10,7 @@ import re
 
 
 GENE_MAP = {
-    'CA': 'Capsid',
+    'CA': 'capsid',
     'PR': 'protease',
     'RT': 'reverse transcriptase',
     'IN': 'integrase',
@@ -45,7 +45,7 @@ def get_NA_length(items):
     return NA_length
 
 
-def feature_gene(feature_table, items):
+def feature_gene(feature_table, items, gene_name):
 
     NA_length = get_NA_length(items)
 
@@ -56,13 +56,17 @@ def feature_gene(feature_table, items):
     ]))
 
     feature_table.append('\t'.join([
-        '', '', '', 'gene', 'pol'
+        '', '', '', 'gene', gene_name.lower()
     ]))
 
 
 def feature_gaps(feature_table, items):
     gap_list = []
 
+    num_heading_del = int(items[0]['aligned_NA_heading'])
+    # num_tailing_del = int(items[-1]['aligned_NA_tailing'])
+
+    # Gap with in gene
     prev_length = 0
     for i in items:
         if not i['gaps']:
@@ -80,22 +84,36 @@ def feature_gaps(feature_table, items):
 
         prev_length += int(i['gene_NA_length'])
 
-    prev_length = 0
-    start = 1
-    stop = 0
-    for i in items:
-        stop = int(i['start_NA_pos']) + prev_length - 1
+    # gap between gene
+    seq_length_acc = 0
+    for i in range(len(items)):
+        j = i + 1
+        if j == len(items):
+            break
 
-        if stop >= start and start != 1:
-            # print(items[0]['Isolate'], start, stop)
-            gap_length = stop - start + 1
+        g1 = items[i]
+        g2 = items[j]
+        gap_length = int(
+            g1['aligned_NA_tailing']) + int(
+            g2['aligned_NA_heading'])
+
+        if not gap_length:
+            pass
+        else:
+            start = seq_length_acc + int(
+                g1['aligned_NA_tailing_pos']) + 1
+            stop = seq_length_acc + int(
+                g1['gene_NA_length']) + int(
+                g2['aligned_NA_heading_pos']) - 1
             gap_list.append((start, stop, gap_length))
 
-        start = int(i['stop_NA_pos']) + 1 + prev_length
+        seq_length_acc += int(g1['gene_NA_length'])
 
-        prev_length += int(i['gene_NA_length'])
+    gap_list.sort(key=lambda x: x[0])
 
     for start, stop, gap_length in gap_list:
+        start = start - num_heading_del
+        stop = stop - num_heading_del
 
         feature_table.append('\t'.join([
             f'{start}', f'{stop}', 'gap',
@@ -105,7 +123,7 @@ def feature_gaps(feature_table, items):
         ]))
 
 
-def feature_nonfunction(feature_table, items):
+def feature_nonfunction(feature_table, items, gene_name):
 
     NA_length = get_NA_length(items)
 
@@ -134,14 +152,14 @@ def feature_nonfunction(feature_table, items):
         ]))
         feature_table.append('\t'.join([
             '', '', '', 'note',
-            f'nonfunctional pol protein due to mutation; contains {" and ".join(genes)}'
+            f'nonfunctional {gene_name.lower()} protein due to mutation; contains {" and ".join(genes)}'
         ]))
         return True
     else:
         return False
 
 
-def feature_cds(feature_table, items):
+def feature_cds(feature_table, items, gene_name):
 
     NA_length = get_NA_length(items)
     genes = [
@@ -156,12 +174,13 @@ def feature_cds(feature_table, items):
     ]))
 
     feature_table.append('\t'.join([
-        '', '', '', 'gene', 'pol'
+        '', '', '', 'gene', gene_name.lower()
     ]))
 
-    start = items[0]['start_NA_pos']
+    num_heading_del = int(items[0]['aligned_NA_heading'])
+    start = int(items[0]['aligned_NA_heading_pos']) - num_heading_del
     feature_table.append('\t'.join([
-        '', '', '', 'codon_start', start
+        '', '', '', 'codon_start', str(start)
     ]))
 
     feature_table.append('\t'.join([
@@ -185,22 +204,42 @@ def generate_feature_table(seq_info, feature_file):
     for isolate, items in seq_info.items():
         items.sort(key=lambda x: ['CA', 'PR', 'RT', 'IN'].index(x['gene']))
 
-        feature_table.append(f'>Feature {isolate}')
+        ca_items = [
+            i
+            for i in items
+            if i['gene'] == 'CA'
+        ]
 
-        feature_gene(feature_table, items)
+        pol_items = [
+            i
+            for i in items
+            if i['gene'] != 'CA'
+        ]
 
-        feature_gaps(feature_table, items)
+        if ca_items:
+            update_feature_table(feature_table, isolate, ca_items, 'CAPSID')
 
-        nonfunction = feature_nonfunction(feature_table, items)
-
-        if not nonfunction:
-            feature_cds(feature_table, items)
-
-        feature_table.append('')
+        if pol_items:
+            update_feature_table(feature_table, isolate, pol_items, 'POL')
 
     with open(feature_file, 'w') as f:
         for i in feature_table:
             f.write(f"{i}\n")
+
+
+def update_feature_table(feature_table, isolate, items, gene_name):
+    feature_table.append(f'>Feature {isolate}_{gene_name}')
+
+    feature_gene(feature_table, items, gene_name)
+
+    feature_gaps(feature_table, items)
+
+    nonfunction = feature_nonfunction(feature_table, items, gene_name)
+
+    if not nonfunction:
+        feature_cds(feature_table, items, gene_name)
+
+    feature_table.append('')
 
 
 if __name__ == '__main__':

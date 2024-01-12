@@ -90,6 +90,10 @@ def get_NA_seq(gene):
         'untrans_reason': untrans_reason,
         'trimmed_NA': trimmed_seq_NA,
         'aligned_NA': aligned_NA,
+        'aligned_NA_heading': len(aligned_NA) - len(aligned_NA.lstrip('.')),
+        'aligned_NA_heading_pos': len(aligned_NA) - len(aligned_NA.lstrip('.')) + 1,
+        'aligned_NA_tailing': len(aligned_NA) - len(aligned_NA.rstrip('.')),
+        'aligned_NA_tailing_pos': len(aligned_NA.rstrip('.')),
     }
 
 
@@ -126,13 +130,19 @@ def dump_seq_meta_info(report_file, aligned_file, ignore_info=None):
                 for i in gene['mutations']
                 if i['isDeletion']
                 ]
+            # fully_ambi_mutations = [
+            #     i['position']
+            #     for i in gene['mutations']
+            #     if len(i['AAs']) == 21
+            # ]
             stops = [
                 i['shortText']
                 for i in gene['mutations']
                 if i['hasStop']
                 ]
 
-            gaps = get_gaps(deletions)
+            # gaps = get_gaps(sorted(deletions + fully_ambi_mutations))
+            gaps = get_gaps(sorted(deletions))
 
             record = {
                 'Isolate': seq['inputSequence']['header'],

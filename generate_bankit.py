@@ -49,45 +49,68 @@ def generate_bankit(seq_info, modifier, organism, host, bankit_file):
     for isolate, items in seq_info.items():
         items.sort(key=lambda x: GENE_ORDER.index(x['gene']))
 
-        seq = ''.join([
-            i['aligned_NA']
+        ca_items = [
+            i
             for i in items
-        ])
+            if i['gene'] == 'CA'
+        ]
 
-        seq = reformat_sequence(seq, isolate)
+        pol_items = [
+            i
+            for i in items
+            if i['gene'] != 'CA'
+        ]
 
-        mod = modifier[isolate]
-
-        description = {
-            'Collection_date': format_date(mod['Collection_date']),
-            'Country': mod['Country'],
-            'Organism': organism,
-            'Host': host,
-            'Isolate': isolate,
-            'Isolation source': mod['Isolation source'],
-            'Subtype': mod['Subtype'] if 'Subtype' in mod else items[0]['subtype']
-        }
-
-        if mod['note']:
-            description['note'] = mod['note']
-
-        description = ' '.join([
-            f"[{k}={v}]"
-            for k, v in description.items()
-        ])
-
-        fasta_seq.append(
-            SeqRecord(
-                id=isolate,
-                seq=Seq(seq),
-                description=description
+        if ca_items:
+            fasta_seq.append(
+                get_seq_record(ca_items, isolate, modifier, 'CAPSID')
             )
-        )
+
+        if pol_items:
+            fasta_seq.append(
+                get_seq_record(pol_items, isolate, modifier, 'POL')
+            )
 
     SeqIO.write(
         fasta_seq,
         str(bankit_file),
         'fasta')
+
+
+def get_seq_record(items, isolate, modifier, gene_name):
+
+    seq = ''.join([
+        i['aligned_NA']
+        for i in items
+    ])
+
+    seq = reformat_sequence(seq, isolate)
+
+    mod = modifier[isolate]
+
+    description = {
+        'Collection_date': format_date(mod['Collection_date']),
+        'Country': mod['Country'],
+        'Organism': organism,
+        'Host': host,
+        'Isolate': isolate,
+        'Isolation source': mod['Isolation source'],
+        'Subtype': mod['Subtype'] if 'Subtype' in mod else items[0]['subtype']
+    }
+
+    if mod['note']:
+        description['note'] = mod['note']
+
+    description = ' '.join([
+        f"[{k}={v}]"
+        for k, v in description.items()
+    ])
+
+    return SeqRecord(
+                id=isolate + '_' + gene_name,
+                seq=Seq(seq),
+                description=description
+            )
 
 
 if __name__ == '__main__':
