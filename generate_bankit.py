@@ -40,6 +40,8 @@ def generate_bankit(
         for isolate, items in groupby(seq_info, key=itemgetter('Isolate'))
     }
 
+    print('# isolates:', len(seq_info))
+
     if not batch_size:
         generate_bankit_per_batch(
             seq_info, modifier, organism, host, bankit_file)
