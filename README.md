@@ -1,4 +1,4 @@
-# HIVDB GenBank submission helper tools
+# HIVDB GenBank Submission Tool
 
 This program can help you prepare sequences, meta data, and sequence annotations. It's designed for sanger sequencing results or consensus sequence of NGS sequencing.
 
