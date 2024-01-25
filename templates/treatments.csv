@@ -1,0 +1,6 @@
+PatientID,regimen,weeks,start_time,stop_time,treatment_order
+A,2NRTI+PI,52,,,1
+A,TDF+FTC+RPV,52,,,2
+A,TDF+FTC+DTG,52,,,3
+B,Naive,48,,,1
+C,first-line,128,,,1
