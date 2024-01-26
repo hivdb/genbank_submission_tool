@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 GENE_MAP = {
-    'CA': 'capsid',
+    # 'CA': 'capsid',
     'PR': 'protease',
     'RT': 'reverse transcriptase',
     'IN': 'integrase',
@@ -236,8 +236,8 @@ def generate_feature_table_per_batch(seq_info, feature_file):
             if i['gene'] != 'CA'
         ]
 
-        if ca_items:
-            update_feature_table(feature_table, isolate, ca_items, 'CAPSID')
+        # if ca_items:
+        #     update_feature_table(feature_table, isolate, ca_items, 'CAPSID')
 
         if pol_items:
             update_feature_table(feature_table, isolate, pol_items, 'POL')

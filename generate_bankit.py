@@ -87,11 +87,11 @@ def generate_bankit_per_batch(
             if i['gene'] != 'CA'
         ]
 
-        if ca_items:
-            fasta_seq.append(
-                get_seq_record(
-                    ca_items, isolate, modifier, organism, host, 'CAPSID')
-            )
+        # if ca_items:
+        #     fasta_seq.append(
+        #         get_seq_record(
+        #             ca_items, isolate, modifier, organism, host, 'CAPSID')
+        #     )
 
         if pol_items:
             fasta_seq.append(
