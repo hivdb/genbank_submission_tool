@@ -4,3 +4,5 @@
     - some software will introduce the error when converting date format
 - check stop codon in insertions
 - count number of N in NA seq, and consider to remove them.
+- detect input file content format
+- check isolate from same year same subject

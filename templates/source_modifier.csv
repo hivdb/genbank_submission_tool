@@ -1,4 +1,4 @@
-Isolate,PatientID (optional),Collection_time,Country,Isolation source,Genes,note (optional),Subtype (optional),Host (optional),Species (optional)
+Isolate,PatientID (optional),Collection_time,Country,Isolation source,Genes (optional),note (optional),Subtype (optional),Host (optional),Organism (optional)
 isolate1,A,2020-01-01,USA,plasma,pol,,B,Homo sapiens (default),Human immunodeficiency virus 1 (default)
 isolate2,A,2020-01-01,USA,plasma,pol,,B,,
 isolate3,B,2020,USA,PBMC,pol,,,,

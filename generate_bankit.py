@@ -13,6 +13,8 @@ GENE_ORDER = ['CA', 'PR', 'RT', 'IN']
 
 
 def format_date(collect_date):
+    if len(collect_date) == 4:
+        return collect_date
     date = datetime.strptime(collect_date, '%Y-%m-%d')
     return datetime.strftime(date, '%d-%b-%Y')
 
@@ -65,6 +67,15 @@ def generate_bankit_per_batch(
         seq_info, modifier, organism, host, bankit_file):
 
     modifier = load_csv(modifier)
+
+    [
+        i.update({
+            i['Host']: i['Host'] if i.get('Host') else host,
+            i['Organism']: i['Organism'] if i.get('Organism') else host,
+        })
+        for i in modifier
+    ]
+
     modifier = {
         i['Isolate']: i
         for i in modifier
@@ -75,11 +86,11 @@ def generate_bankit_per_batch(
     for isolate, items in seq_info.items():
         items.sort(key=lambda x: GENE_ORDER.index(x['gene']))
 
-        ca_items = [
-            i
-            for i in items
-            if i['gene'] == 'CA'
-        ]
+        # ca_items = [
+        #     i
+        #     for i in items
+        #     if i['gene'] == 'CA'
+        # ]
 
         pol_items = [
             i
@@ -90,13 +101,13 @@ def generate_bankit_per_batch(
         # if ca_items:
         #     fasta_seq.append(
         #         get_seq_record(
-        #             ca_items, isolate, modifier, organism, host, 'CAPSID')
+        #             ca_items, isolate, modifier, 'CAPSID')
         #     )
 
         if pol_items:
             fasta_seq.append(
                 get_seq_record(
-                    pol_items, isolate, modifier, organism, host, 'POL')
+                    pol_items, isolate, modifier, 'POL')
             )
 
     SeqIO.write(
@@ -105,7 +116,7 @@ def generate_bankit_per_batch(
         'fasta')
 
 
-def get_seq_record(items, isolate, modifier, organism, host, gene_name):
+def get_seq_record(items, isolate, modifier, gene_name):
 
     seq = ''.join([
         i['aligned_NA']
@@ -117,13 +128,13 @@ def get_seq_record(items, isolate, modifier, organism, host, gene_name):
     mod = modifier[isolate]
 
     description = {
-        'Collection_date': format_date(mod['Collection_date']),
+        'Collection_date': format_date(mod['Collection_time']),
         'Country': mod['Country'],
-        'Organism': organism,
-        'Host': host,
+        'Organism': mod['Organism'],
+        'Host': mod['Host'],
         'Isolate': isolate,
         'Isolation source': mod['Isolation source'],
-        'Subtype': mod['Subtype'] if 'Subtype' in mod else items[0]['subtype']
+        'Subtype': mod['Subtype'] if mod.get('Subtype') else items[0]['subtype']
     }
 
     if mod['note']:
@@ -144,12 +155,12 @@ def get_seq_record(items, isolate, modifier, organism, host, gene_name):
 if __name__ == '__main__':
     seq_info = sys.argv[1]
     source_modifier = sys.argv[2]
-    organism = sys.argv[3]
-    host = sys.argv[4]
-    bankit_file = Path(sys.argv[5]).resolve()
+    bankit_file = Path(sys.argv[3]).resolve()
+    organism = 'Human immunodeficiency virus 1'
+    host = 'Homo sapiens'
 
-    if len(sys.argv) == 7:
-        batch_size = int(sys.argv[6])
+    if len(sys.argv) == 5:
+        batch_size = int(sys.argv[4])
     else:
         batch_size = None
     generate_bankit(
