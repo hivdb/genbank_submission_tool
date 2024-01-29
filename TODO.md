@@ -6,3 +6,4 @@
 - count number of N in NA seq, and consider to remove them.
 - detect input file content format
 - check isolate from same year same subject
+- using phylogenetic tree to check QA issue
