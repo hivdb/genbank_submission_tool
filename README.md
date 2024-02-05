@@ -22,6 +22,7 @@ The meta data should contain the columns below:
 
 - `Isolate`
 - `Collection_date` (formatted like '2024-01-01')
+    - https://www.ncbi.nlm.nih.gov/WebSub/html/help/collection-date.html
 - `Country`
     - Please check the name is correct, https://www.ncbi.nlm.nih.gov/genbank/collab/country/
 - `Isolation source`

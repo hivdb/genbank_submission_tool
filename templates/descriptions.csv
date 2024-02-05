@@ -1,5 +1,5 @@
-Isolate,PatientID,Clone,Collection_time,Country,Isolation source,Genes,note,Subtype,Host,Organism
-isolate1,A,,2020-01-01,USA,plasma,pol,,B,Homo sapiens (default),Human immunodeficiency virus 1 (default)
-isolate2,A,,2020-01-01,USA,plasma,pol,,B,,
-isolate3,B,,2020,USA,PBMC,pol,,,,
-isolate4,C,,2021,USA,Plasma,pol,,,,
+IsolateID,PID,Clone,Method of Cloning,IsolateDate,Country,Isolation source,Genes,note,Subtype,Host,Organism
+isolate1,A,,,2020-01-01,USA,plasma,pol,,B,,
+isolate2,A,,,2020-01-01,USA,plasma,pol,,B,,
+isolate3,B,,,2020,USA,PBMC,pol,,,,
+isolate4,C,,,2021,USA,Plasma,pol,,,,
