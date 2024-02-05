@@ -1,5 +1,5 @@
-IsolateID,PID,Clone,Method of Cloning,IsolateDate,Country,Isolation source,Genes,note,Subtype,Host,Organism
-isolate1,A,,,2020-01-01,USA,plasma,pol,,B,,
-isolate2,A,,,2020-01-01,USA,plasma,pol,,B,,
-isolate3,B,,,2020,USA,PBMC,pol,,,,
-isolate4,C,,,2021,USA,Plasma,pol,,,,
+IsolateID,PID,Clone,Method of Cloning,IsolateDate,Country,Isolation source,Subtype,Host,Organism
+isolate1,A,,,2020-01-01,USA,plasma,B,,
+isolate2,A,,,2020-01-01,USA,plasma,B,,
+isolate3,B,,,2020,USA,PBMC,,,
+isolate4,C,,,2021,USA,Plasma,,,
