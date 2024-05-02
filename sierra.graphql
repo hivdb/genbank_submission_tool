@@ -1,3 +1,4 @@
+
 query align($sequences: [UnalignedSequenceInput]!) {
     viewer {
         currentVersion {
@@ -20,36 +21,12 @@ query align($sequences: [UnalignedSequenceInput]!) {
                 level
                 message
             }
-            alignedGeneSequences(includeGenes: [CA, PR, RT, IN]) {
+            DRM: mutations(filterOptions: [DRM]) {
                 gene {
                     name
-                    length
-                },
-                firstNA,
-                lastNA,
-                mutations {
-                    position
-                    AAs
-                    isInsertion
-                    isDeletion
-                    insertedNAs
-                    isUnusual
-                    isSDRM
-                    primaryType
-                    hasStop
-                    shortText
-                    isApobecMutation
-                    isAmbiguous
-                },
-                # adjustedAlignedNAs, does not contain insertion
-                # adjustedAlignedAAs,
-                prettyPairwise {
-                    positionLine,
-                    refAALine,
-                    alignedNAsLine,
-                    mutationLine
-                },
+                }
+                text
             }
         }
     }
-}
+    }
