@@ -36,9 +36,9 @@ def align_seq(seq_list):
 
 
 def query_sierra(sequences):
-    url = 'https://hivdb.stanford.edu/graphql'
+    url = 'https://hivdb.stanford.edu/hcv/graphql'
 
-    graphql = open(WS / 'sierra.graphql').read()
+    graphql = open('./sierra.graphql').read()
 
     resp = requests.post(
         url,
